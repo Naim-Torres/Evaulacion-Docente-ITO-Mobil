@@ -2,7 +2,7 @@
 
 import CustomInput from "@/app/components/CustomInput";
 import { useForm } from 'react-hook-form';
-// import { signIn, getSession } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from "next/navigation"
 import { Toaster, toast } from "sonner";
 import { useEffect } from 'react'
@@ -13,25 +13,25 @@ function LoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const router = useRouter();
 
-    // useEffect(() => {
-    //     const checkSession = async () => {
-    //         const session = await getSession()
-    //         if (session) {
-    //             router.push('/')
-    //         }
-    //     }
-    //     checkSession()
-    // }, [])
+    useEffect(() => {
+        const checkSession = async () => {
+            const session = await getSession()
+            if (session) {
+                router.push('/')
+            }
+        }
+        checkSession()
+    }, [])
 
     const onSubmit = handleSubmit(async (data) => {
         // CustomToast.loading('Iniciando sesión');
         toast.loading("Iniciando sesión");
 
-        // const res = await signIn('credentials', {
-        //     email: data.email,
-        //     password: data.password,
-        //     redirect: false
-        // })
+        const res = await signIn('credentials', {
+            email: data.email,
+            password: data.password,
+            redirect: false
+        })
 
         toast.dismiss();
 
@@ -44,7 +44,7 @@ function LoginPage() {
     })
 
     const handleGoogleLogin = () => {
-        signIn('google');
+        signIn('google', { callbackUrl: '/' });
     };
 
     return (
