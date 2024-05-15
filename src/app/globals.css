@@ -2,32 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+button {
+  @apply flex justify-center items-center w-fit py-3 px-6 text-sm font-semibold rounded-md duration-200 hover:shadow-md;
+  @apply md:py-3 md:px-6;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+button.bg-primary-900 {
+  @apply text-white hover:bg-primary-900/95;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+button.secondary {
+  @apply border border-slate-500 text-slate-500 duration-200 hover:bg-white/50;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.title {
+  @apply text-3xl font-semibold;
+  @apply md:text-4xl;
+}
+
+.highlight {
+  @apply border-l-2 border-primary-900 pl-2;
+  @apply md:border-l-4 md:pl-4;
 }
