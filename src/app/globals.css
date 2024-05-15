@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  @apply bg-primary-100;
+}
+
 button {
   @apply flex justify-center items-center w-fit py-3 px-6 text-sm font-semibold rounded-md duration-200 hover:shadow-md;
   @apply md:py-3 md:px-6;
