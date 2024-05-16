@@ -34,8 +34,9 @@ export default function RootLayout({ children }) {
                     lg:block
                 "
             />
-
-            {children}
+            <main className="w-full lg:absolute lg:w-8/12 xl:w-7/12 lg:right-0">
+                {children}
+            </main>
         </div>
     );
 }

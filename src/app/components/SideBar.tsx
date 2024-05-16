@@ -6,7 +6,7 @@ interface Props {
 
 export default function SideBar({ className = '' }: Props) {
     return (
-        <section className={`${className} w-[420px] xl:w-fit bg-primary-900`}>
+        <section className={`${className} fixed w-4/12 h-screen xl:w-5/12 bg-primary-900`}>
             <NavBar />
 
             <div className="flex flex-col justify-center gap-24 h-full p-8 text-white">
