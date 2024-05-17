@@ -34,10 +34,10 @@ export default function Evaluation() {
     // Change the question that it shows (change the state):
     const changeQuestion = async () => {
         if (progress.progress < progress.limit - 1) {
-            await animate(scope.current, { opacity: 0 }, { duration: 0.5 });
+            await animate(scope.current, { opacity: 0 }, { duration: 0.5, ease: 'easeInOut' });
             await animate(scope.current, { y: 60 })
             setQuestion(questions[progress.progress + 1]);
-            await animate(scope.current, { opacity: 1, y: 0 }, { duration: 0.5 });
+            await animate(scope.current, { opacity: 1, y: 0 }, { duration: 0.5, ease: 'easeInOut' });
         }
     }
 
