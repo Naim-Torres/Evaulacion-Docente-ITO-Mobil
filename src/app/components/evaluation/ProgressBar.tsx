@@ -1,5 +1,8 @@
+'use client';
+
 import { IoChevronBack } from "react-icons/io5";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 interface Props {
     className?: string
@@ -8,6 +11,12 @@ interface Props {
 }
 
 export default function ProgressBar({ className = '', progress, limit }: Props) {
+    const [width, setWidth] = useState(0);
+
+    useEffect(() => {
+        setWidth(progress / limit);
+    }, [progress]);
+
     return (
         <div className="flex items-center gap-4 w-full">
             <Link href="/teachers">
@@ -19,12 +28,12 @@ export default function ProgressBar({ className = '', progress, limit }: Props) 
                 <div
                     className={`flex items-center justify-center h-7 font-bold text-white rounded-full bg-primary-900 duration-300`}
                     style={{
-                        width: `calc((100% * ${progress} / ${limit}))`
+                        width: `calc((100% * ${width}))`
                     }}
                 >
-                    <span className="hidden sm:block">{progress} / {limit}</span>
+                    <span className={width < 0.2 ? 'hidden' : 'block'}>{progress} / {limit}</span>
                 </div>
-                <span className="sm:hidden text-xs font-bold text-primary-900">{progress} / {limit}</span>
+                <span className={`${width < 0.2 ? 'block' : 'hidden'} ${width == 0 ? 'hidden' : ''} text-xs font-bold text-primary-900`}>{progress} / {limit}</span>
 
                 {progress == 0 && (
                     <div className="flex items-center justify-center w-full h-7 font-bold text-primary-900">
