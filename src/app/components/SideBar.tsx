@@ -2,6 +2,7 @@
 
 import NavBar from '@components/NavBar';
 import TeachersSideBar from './TeachersSideBar';
+import EvaluationSideBar from './EvaluationSideBar';
 import { usePathname } from 'next/navigation';
 
 interface Props {
@@ -17,6 +18,10 @@ export default function SideBar({ className = '' }: Props) {
 
             {pathname == '/teachers' && (
                 <TeachersSideBar />
+            )}
+
+            {pathname == '/evaluation' && (
+                <EvaluationSideBar />
             )}
         </section>
     )

@@ -16,7 +16,7 @@ export default function TeachersSideBar() {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center gap-24 h-full p-8 text-white">
+        <div className="flex flex-col gap-24 h-full mt-24 p-8 text-white">
             <div className="w-[320px] xl:w-[500px]">
                 <h1 className="text-6xl font-bold xl:text-8xl">Profesores actuales</h1>
                 <p className="
