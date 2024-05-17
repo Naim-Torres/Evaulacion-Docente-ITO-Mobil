@@ -2,7 +2,7 @@
 
 import ProgressBar from "../components/evaluation/ProgressBar";
 import ButtonOption from "../components/evaluation/ButtonOption";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -12,21 +12,42 @@ const options = [
     { emoji: '😐', description: 'Neutral', points: 3 },
     { emoji: '😣', description: 'En desacuerdo', points: 2 },
     { emoji: '😡', description: 'Totalmente en desacuerdo', points: 1 },
-]
+];
+
+const questions = [
+    "1. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
+    "2. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
+    "3. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
+    "4. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
+    "5. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?"
+];
 
 export default function Evaluation() {
     const [selectedIndex, setSelectedIndex] = useState();
-    const [progress, setProgress] = useState({ progress: 0, limit: 15 });
+    const [disabled, setDisabled] = useState(false);
+    const [progress, setProgress] = useState({ progress: 0, limit: 5 });
+    const [question, setQuestion] = useState(questions[0]);
     const navigation = useRouter();
 
+    // Change the question that it shows (change the state):
+    const changeQuestion = () => {
+        if (progress.progress < progress.limit - 1) {
+            setQuestion(questions[progress.progress + 1]);
+        }
+    }
+
+    // Manage the onClick button:
     const nextQuestion = () => {
         if (progress.progress == progress.limit) {
             navigation.push('/teachers');
         } else {
             if (selectedIndex != null) {
+                changeQuestion();
+
                 setProgress(prevState => {
                     return { ...prevState, progress: prevState.progress + 1 }
                 });
+
 
                 setSelectedIndex(null);
             } else {
@@ -35,6 +56,13 @@ export default function Evaluation() {
         }
 
     }
+
+    // When the evaluation is over, it disable all buttons
+    useEffect(() => {
+        if (progress.progress == progress.limit) {
+            setDisabled(true);
+        }
+    }, [progress]);
 
     return (
         <>
@@ -49,7 +77,7 @@ export default function Evaluation() {
                         lg:py-8 lg:text-5xl
                         2xl:py-12
                     "
-                >Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?</p>
+                >{question}</p>
 
                 <div className="flex flex-col items-center gap-4 w-full h-full">
                     {options.map((option, index) => (
@@ -61,6 +89,7 @@ export default function Evaluation() {
                             selectedIndex={selectedIndex}
                             index={index}
                             setSelectedIndex={setSelectedIndex}
+                            disabled={disabled}
                             className="
                                 w-full
                                 md:w-7/12
