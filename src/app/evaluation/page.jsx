@@ -5,6 +5,7 @@ import ButtonOption from "../components/evaluation/ButtonOption";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAnimate } from "framer-motion";
 
 const options = [
     { emoji: '😁', description: 'Totalmente de acuerdo', points: 5 },
@@ -28,11 +29,15 @@ export default function Evaluation() {
     const [progress, setProgress] = useState({ progress: 0, limit: 5 });
     const [question, setQuestion] = useState(questions[0]);
     const navigation = useRouter();
+    const [scope, animate] = useAnimate();
 
     // Change the question that it shows (change the state):
-    const changeQuestion = () => {
+    const changeQuestion = async () => {
         if (progress.progress < progress.limit - 1) {
+            await animate(scope.current, { opacity: 0 }, { duration: 0.5 });
+            await animate(scope.current, { y: 60 })
             setQuestion(questions[progress.progress + 1]);
+            await animate(scope.current, { opacity: 1, y: 0 }, { duration: 0.5 });
         }
     }
 
@@ -61,6 +66,7 @@ export default function Evaluation() {
     useEffect(() => {
         if (progress.progress == progress.limit) {
             setDisabled(true);
+            toast.info('¡Evaluación finalizada!');
         }
     }, [progress]);
 
@@ -71,6 +77,7 @@ export default function Evaluation() {
                 <ProgressBar progress={progress.progress} limit={progress.limit} />
 
                 <p
+                    ref={scope}
                     className="
                         px-0 py-4 text-center text-3xl font-bold
                         md:px-4 md:py-8 md:text-4xl
