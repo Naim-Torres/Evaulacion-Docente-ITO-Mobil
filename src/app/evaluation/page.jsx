@@ -26,7 +26,7 @@ const questions = [
 export default function Evaluation() {
     const [selectedIndex, setSelectedIndex] = useState();
     const [disabled, setDisabled] = useState(false);
-    const [progress, setProgress] = useState({ progress: 0, limit: 5 });
+    const [progress, setProgress] = useState({ progress: 0, limit: 15 });
     const [question, setQuestion] = useState(questions[0]);
     const navigation = useRouter();
     const [scope, animate] = useAnimate();
