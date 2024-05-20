@@ -1,19 +1,71 @@
+'use client';
 import { useState, useEffect } from "react";
 import { fetchCycle } from "../teachers/controller";
 import TeacherSideBarSkeleton from "./skeleton/skeletonUIs/TeacherSideBarSkeleton";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+
+
+interface Course {
+    school_worker: {
+        name: string;
+        evaluation: any[];
+    };
+    subject: string;
+}
+
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+    role: string;
+  }
 
 export default function TeachersSideBar() {
     const [date, setDate] = useState({ day: '', month: '', year: 0, isActive: false });
     const [isLoading, setIsLoading] = useState(true);
+    const [TeachersWithContent, setTeachersWithContent] = useState(0);
+    const [TeacherWithoutContent, setTeachersWithoutContent] = useState(0);
+    const { data: session } = useSession();
+    const user = session?.user as User;
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetchData = async () => {
             setDate(await fetchCycle());
+            const res = await fetch(`/api/student/${user.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                const schoolWorkers: Course[] = data.Course.map((course: any )=> ({
+                    school_worker: course.school_worker,
+                    subject: course.subject
+                }));
+                
+                const counters = schoolWorkers.reduce(
+                    (acc, worker) => {
+                      if (worker.school_worker.evaluation && worker.school_worker.evaluation.length > 0) {
+                        acc.withContent++;
+                      } else {
+                        acc.withoutContent++;
+                      }
+                      return acc;
+                    },
+                    { withContent: 0, withoutContent: 0 }
+                  );
+            
+                  setTeachersWithContent(counters.withContent);
+                  setTeachersWithoutContent(counters.withoutContent);
+
+            } else {
+                toast.error('Ocurrió un error al cargar los datos');
+            }
+
             setIsLoading(false);
         }
-
-        fetch();
-    }, []);
+        if (session?.user) {
+            fetchData();
+        }
+    }, [session]);
 
     return (
         <div className="flex flex-col gap-24 h-full mt-24 p-8 text-white">
@@ -47,13 +99,13 @@ export default function TeachersSideBar() {
 
                     {/* PROFESORES POR EVALUAR */}
                     <div className="flex flex-col justify-end gap-2 w-1/3 border-x-2 border-white px-4">
-                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">4</p>
+                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{TeacherWithoutContent}</p>
                         <h3 className="text-base xl:text-lg text-white/60">Profesores por evaluar</h3>
                     </div>
 
                     {/* PROFESORES EVALUADOS */}
                     <div className="flex flex-col justify-end gap-2 w-1/3 pl-4">
-                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">0</p>
+                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{TeachersWithContent}</p>
                         <h3 className="text-base xl:text-lg text-white/60">Profesores evaluados</h3>
                     </div>
                 </div>
