@@ -2,10 +2,11 @@
 
 import ProgressBar from "../components/evaluation/ProgressBar";
 import ButtonOption from "../components/evaluation/ButtonOption";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAnimate } from "framer-motion";
+import { EvaluationContext } from "../components/evaluation/EvaluationContext";
 
 const options = [
     { emoji: '😁', description: 'Totalmente de acuerdo', points: 5 },
@@ -15,21 +16,29 @@ const options = [
     { emoji: '😡', description: 'Totalmente en desacuerdo', points: 1 },
 ];
 
-const questions = [
+/* const questions = [
     "1. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
     "2. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
     "3. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
     "4. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
     "5. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?"
-];
+]; */
 
 export default function Evaluation() {
     const [selectedIndex, setSelectedIndex] = useState();
     const [disabled, setDisabled] = useState(false);
-    const [progress, setProgress] = useState({ progress: 0, limit: 15 });
+    const [progress, setProgress] = useState({ progress: 0, limit: 0 });
+    const [questions, setQuestions] = useState([]);
     const [question, setQuestion] = useState(questions[0]);
     const navigation = useRouter();
     const [scope, animate] = useAnimate();
+    const { teacherId, studentId } = useContext(EvaluationContext);
+
+    useEffect(() => {
+        if (teacherId && studentId) {
+            fetchQuestions();
+        }
+    }, [teacherId, studentId]);
 
     // Change the question that it shows (change the state):
     const changeQuestion = async () => {
@@ -41,10 +50,49 @@ export default function Evaluation() {
         }
     }
 
+    useEffect(() => {
+        if (questions.length > 0) {
+          setQuestion(questions[0]);
+        }
+      }, [questions]);
+      
+
+    const fetchQuestions = async () => {
+        const response = await fetch('/api/questions');
+        const data = await response.json();
+        console.log(data)
+        const formattedData = data.map((item, index) => `${index + 1}. ${item.question}`);
+        setQuestions(formattedData);
+        setProgress({ progress: 0, limit: formattedData.length });
+    }
+
+    const fetchEvaluation = async () => {
+        const response = await fetch('/api/evaluation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                teacherId,
+                studentId,
+                answers: questions.map((question, index) => ({
+                    question: question,
+                    answer: options[selectedIndex].description,
+                    points: options[selectedIndex].points
+                }))
+            })
+        });
+
+        const data = await response.json();
+        console.log(data);
+    }
+
     // Manage the onClick button:
     const nextQuestion = () => {
         if (progress.progress == progress.limit) {
             navigation.push('/teachers');
+
+            
         } else {
             if (selectedIndex != null) {
                 changeQuestion();
@@ -64,11 +112,11 @@ export default function Evaluation() {
 
     // When the evaluation is over, it disable all buttons
     useEffect(() => {
-        if (progress.progress == progress.limit) {
+        if (question && progress.progress == progress.limit) {
             setDisabled(true);
             toast.info('¡Evaluación finalizada!');
         }
-    }, [progress]);
+    }, [progress, questions]);
 
     return (
         <>
@@ -84,7 +132,7 @@ export default function Evaluation() {
                         lg:py-8 lg:text-5xl
                         2xl:py-12
                     "
-                >{question}</p>
+                >{question || 'Cargando preguntas...'}</p>
 
                 <div className="flex flex-col items-center gap-4 w-full h-full">
                     {options.map((option, index) => (

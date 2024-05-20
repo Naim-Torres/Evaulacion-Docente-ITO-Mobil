@@ -9,12 +9,15 @@ import { useSession } from "next-auth/react";
 export default function Teachers() {
     const [teachers, setTeachers] = useState([]);
     const { data: session } = useSession();
+    const [studentId, setStudentId] = useState();
 
     const fetchTeachers = async () => {
         const res = await fetch(`/api/student/${session?.user?.id}`);
 
         if (res.status == 200) {
             const resJson = await res.json();
+            const studentId = resJson.id;
+            setStudentId(studentId);
             const schoolWorkers = resJson.Course.map(course => ({
                 school_worker: course.school_worker,
                 subject: course.subject
@@ -42,7 +45,7 @@ export default function Teachers() {
                 <div className="grid grid-cols-2 gap-6 sm:gap-8 w-full p-8">
                     {teachers.length > 0 ? (
                         teachers.map(teacher => (
-                            <TeacherCards key={teacher.id} teacher={teacher.school_worker} subject={teacher.subject} />
+                            <TeacherCards key={teacher.id} teacher={teacher.school_worker} subject={teacher.subject} studentId={studentId}/>
                         ))
                     ) : (
                         <p>No hay evaluaciones por realizar</p>
