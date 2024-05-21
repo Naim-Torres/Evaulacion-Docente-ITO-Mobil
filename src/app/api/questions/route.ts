@@ -7,6 +7,7 @@ export async function GET(request: Request) {
 		const questions = await db.questionList.findMany({
             select: {
                 question: true,
+                id: true,
             },
             where: { active: true },
         }

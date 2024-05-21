@@ -16,20 +16,13 @@ const options = [
     { emoji: '😡', description: 'Totalmente en desacuerdo', points: 1 },
 ];
 
-/* const questions = [
-    "1. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
-    "2. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
-    "3. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
-    "4. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?",
-    "5. Al inicio del semestre, ¿El profesor te brinda el programa de estudios de la materia?"
-]; */
-
 export default function Evaluation() {
     const [selectedIndex, setSelectedIndex] = useState();
     const [disabled, setDisabled] = useState(false);
     const [progress, setProgress] = useState({ progress: 0, limit: 0 });
-    const [questions, setQuestions] = useState([]);
-    const [question, setQuestion] = useState(questions[0]);
+    const [questions, setQuestions] = useState([{text: 'Cargando preguntas...', value: 0}]);
+    const [question, setQuestion] = useState([{text:questions[0].text, value:questions[0].value}]);
+    const [evaluation, setEvaluation] = useState([{text:'', id:"", points: 0}]);
     const navigation = useRouter();
     const [scope, animate] = useAnimate();
     const { teacherId, studentId } = useContext(EvaluationContext);
@@ -41,11 +34,14 @@ export default function Evaluation() {
     }, [teacherId, studentId]);
 
     // Change the question that it shows (change the state):
-    const changeQuestion = async () => {
-        if (progress.progress < progress.limit - 1) {
+    const changeQuestion = async (selectedIndex) => {
+        console.log(progress.progress, progress.limit - 1, progress.progress <= progress.limit - 1)
+        if (progress.progress <= progress.limit - 1) {
             await animate(scope.current, { opacity: 0 }, { duration: 0.5, ease: 'easeInOut' });
             await animate(scope.current, { y: 60 })
+            setEvaluation([ ...evaluation, {text: question.text, id:question.value, points: options[selectedIndex].points}])
             setQuestion(questions[progress.progress + 1]);
+            console.log(progress.progress)
             await animate(scope.current, { opacity: 1, y: 0 }, { duration: 0.5, ease: 'easeInOut' });
         }
     }
@@ -60,42 +56,52 @@ export default function Evaluation() {
     const fetchQuestions = async () => {
         const response = await fetch('/api/questions');
         const data = await response.json();
-        console.log(data)
-        const formattedData = data.map((item, index) => `${index + 1}. ${item.question}`);
+        const formattedData = data.map((item, index) => ({
+            text: `${index + 1}. ${item.question}`,
+            value: item.id
+        }));
         setQuestions(formattedData);
         setProgress({ progress: 0, limit: formattedData.length });
     }
 
     const fetchEvaluation = async () => {
+        // Convert the evaluation array to a JSON object, excluding the first element
+        const evaluationJson = evaluation.slice(1).reduce((acc, item) => {
+            return {
+                ...acc,
+                [item.id]: item.points,
+            };
+        }, {});
+
         const response = await fetch('/api/evaluation', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                teacherId,
-                studentId,
-                answers: questions.map((question, index) => ({
-                    question: question,
-                    answer: options[selectedIndex].description,
-                    points: options[selectedIndex].points
-                }))
+                id_school_worker: teacherId,
+                id_student: studentId,
+                evaluation: JSON.stringify(evaluationJson)
             })
         });
 
         const data = await response.json();
-        console.log(data);
+        if (data.error) {
+            toast.error(data.error);
+        } else {
+            toast.success('¡Evaluación enviada con éxito!');
+        }   
     }
 
     // Manage the onClick button:
     const nextQuestion = () => {
         if (progress.progress == progress.limit) {
+            fetchEvaluation();
             navigation.push('/teachers');
-
             
         } else {
             if (selectedIndex != null) {
-                changeQuestion();
+                changeQuestion(selectedIndex);
 
                 setProgress(prevState => {
                     return { ...prevState, progress: prevState.progress + 1 }
@@ -112,7 +118,7 @@ export default function Evaluation() {
 
     // When the evaluation is over, it disable all buttons
     useEffect(() => {
-        if (question && progress.progress == progress.limit) {
+        if (question.text && progress.progress == progress.limit) {
             setDisabled(true);
             toast.info('¡Evaluación finalizada!');
         }
@@ -132,7 +138,7 @@ export default function Evaluation() {
                         lg:py-8 lg:text-5xl
                         2xl:py-12
                     "
-                >{question || 'Cargando preguntas...'}</p>
+                >{progress.progress < progress.limit && question.text || '...'}</p>
 
                 <div className="flex flex-col items-center gap-4 w-full h-full">
                     {options.map((option, index) => (
