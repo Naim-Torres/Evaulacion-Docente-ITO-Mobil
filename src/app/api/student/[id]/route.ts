@@ -14,7 +14,6 @@ export async function GET(request: Request, { params }: Params) {
                         school_worker: {
                             include: {
                                 user: true,
-                                evaluation: true,
                             }
                         },
                         subject: true,
@@ -26,9 +25,20 @@ export async function GET(request: Request, { params }: Params) {
             },
         });
 
+        const evaluation = await db.evaluation.findMany({
+            select: {
+                id_school_worker: true,
+            },
+            where: {
+                id_student: student?.id,
+            }
+        });
+
         if(!student) {
             return NextResponse.json({error: "Error", message: "Student not found" }, { status: 404 });
         }
+
+        student["evaluation"] = evaluation;
 
         return NextResponse.json(student, { status: 200 });
     } catch (error: any) {

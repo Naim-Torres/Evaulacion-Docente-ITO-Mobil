@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { EvaluationContext } from "../evaluation/EvaluationContext";
@@ -6,7 +6,6 @@ import { EvaluationContext } from "../evaluation/EvaluationContext";
 type SchoolWorkerUser = Prisma.SchoolWorkerGetPayload<{
     include: {
         user: true,
-        evaluation: true
     }
 }>
 
@@ -16,12 +15,12 @@ interface Props {
     teacher: SchoolWorkerUser
     subject: Subject
     studentId: string
-}
+    evaluated: string | null
+}           
 
-export default function TeacherCards({ teacher, subject, studentId }: Props) {
-    const isDisabled = teacher.evaluation && teacher.evaluation.length > 0;
+export default function TeacherCards({ teacher, subject, studentId, evaluated }: Props) {
+    const [isDisabled] = useState(evaluated);
     const { setTeacherId, setStudentId } = useContext(EvaluationContext);
-
     const handleClick = () => {
         if (!isDisabled) {
             setTeacherId(teacher.id);
