@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 interface Course {
     school_worker: {
+        id: string;
         name: string;
         evaluation: any[];
     };
@@ -20,13 +21,13 @@ interface User {
     email: string;
     image: string;
     role: string;
-  }
+}
 
 export default function TeachersSideBar() {
     const [date, setDate] = useState({ day: '', month: '', year: 0, isActive: false });
     const [isLoading, setIsLoading] = useState(true);
-    const [TeachersWithContent, setTeachersWithContent] = useState(0);
-    const [TeacherWithoutContent, setTeachersWithoutContent] = useState(0);
+    const [done, setDone] = useState(0);
+    const [notDone, setNotDone] = useState(0);
     const { data: session } = useSession();
     const user = session?.user as User;
 
@@ -36,25 +37,27 @@ export default function TeachersSideBar() {
             const res = await fetch(`/api/student/${user.id}`);
             if (res.ok) {
                 const data = await res.json();
-                const schoolWorkers: Course[] = data.Course.map((course: any )=> ({
+                const evaluated = data.evaluation;
+                const schoolWorkers: Course[] = data.Course.map((course: any) => ({
                     school_worker: course.school_worker,
                     subject: course.subject
                 }));
-                
-                const counters = schoolWorkers.reduce(
-                    (acc, worker) => {
-                      if (worker.school_worker.evaluation && worker.school_worker.evaluation.length > 0) {
-                        acc.withContent++;
-                      } else {
-                        acc.withoutContent++;
-                      }
-                      return acc;
-                    },
-                    { withContent: 0, withoutContent: 0 }
-                  );
-            
-                  setTeachersWithContent(counters.withContent);
-                  setTeachersWithoutContent(counters.withoutContent);
+
+
+                let doneCount = 0;
+                let awaitCount = 0;
+
+                schoolWorkers.forEach((schoolWorker: Course) => {
+                    const found = evaluated.find((evaluated: any) => evaluated.id_school_worker === schoolWorker.school_worker.id);
+                    if (found) {
+                        doneCount++;
+                    } else {
+                        awaitCount++;
+                    }
+                });
+
+                setDone(doneCount);
+                setNotDone(awaitCount);
 
             } else {
                 toast.error('Ocurrió un error al cargar los datos');
@@ -99,13 +102,13 @@ export default function TeachersSideBar() {
 
                     {/* PROFESORES POR EVALUAR */}
                     <div className="flex flex-col justify-end gap-2 w-1/3 border-x-2 border-white px-4">
-                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{TeacherWithoutContent}</p>
+                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{notDone}</p>
                         <h3 className="text-base xl:text-lg text-white/60">Profesores por evaluar</h3>
                     </div>
 
                     {/* PROFESORES EVALUADOS */}
                     <div className="flex flex-col justify-end gap-2 w-1/3 pl-4">
-                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{TeachersWithContent}</p>
+                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{done}</p>
                         <h3 className="text-base xl:text-lg text-white/60">Profesores evaluados</h3>
                     </div>
                 </div>

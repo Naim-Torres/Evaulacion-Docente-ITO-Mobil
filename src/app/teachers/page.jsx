@@ -48,8 +48,6 @@ export default function Teachers() {
                     {teachers.length > 0 ? (
                         teachers.map(teacher => (
 
-                            console.log(evaluated),
-                            console.log(evaluated.some(evaluation => evaluation.id_school_worker === teacher.school_worker.id)),
 
                             <TeacherCards 
                                 key={teacher.id} 
