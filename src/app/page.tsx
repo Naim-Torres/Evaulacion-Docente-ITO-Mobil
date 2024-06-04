@@ -7,7 +7,7 @@ export default function Home() {
     if(session){
         return (
             <div>
-                <h2>Hola a {session?.user?.role}</h2>
+                <h2>Hola a {session?.user?.name}</h2>
                 <button onClick={() => signOut()}>Cerrar sesión</button>
             </div>
         )   
