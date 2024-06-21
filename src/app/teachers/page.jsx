@@ -48,14 +48,15 @@ export default function Teachers() {
                     {teachers.length > 0 ? (
                         teachers.map(teacher => (
 
-
                             <TeacherCards 
                                 key={teacher.id} 
                                 teacher={teacher.school_worker} 
                                 subject={teacher.subject} 
                                 studentId={studentId}
                                 evaluated={
-                                    evaluated.some(evaluation => evaluation.id_school_worker === teacher.school_worker.id)
+                                    evaluated.some(evaluation => 
+                                        evaluation.id_school_worker === teacher.school_worker.id 
+                                        && evaluation.id_subject === teacher.subject.id)
                                 }
                             />
                         ))

@@ -28,6 +28,7 @@ export async function GET(request: Request, { params }: Params) {
         const evaluation = await db.evaluation.findMany({
             select: {
                 id_school_worker: true,
+                id_subject: true,
             },
             where: {
                 id_student: student?.id,

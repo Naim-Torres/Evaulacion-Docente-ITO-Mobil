@@ -25,7 +25,7 @@ export default function Evaluation() {
     const [evaluation, setEvaluation] = useState([{text:'', id:"", points: 0}]);
     const navigation = useRouter();
     const [scope, animate] = useAnimate();
-    const { teacherId, studentId } = useContext(EvaluationContext);
+    const { teacherId, studentId, subjectId } = useContext(EvaluationContext);
 
     useEffect(() => {
         if (teacherId && studentId) {
@@ -41,7 +41,6 @@ export default function Evaluation() {
             await animate(scope.current, { y: 60 })
             setEvaluation([ ...evaluation, {text: question.text, id:question.value, points: options[selectedIndex].points}])
             setQuestion(questions[progress.progress + 1]);
-            console.log(progress.progress)
             await animate(scope.current, { opacity: 1, y: 0 }, { duration: 0.5, ease: 'easeInOut' });
         }
     }
@@ -65,6 +64,7 @@ export default function Evaluation() {
     }
 
     const fetchEvaluation = async () => {
+        const average_points = evaluation.reduce((acc, item) => acc + item.points, 0) / evaluation.length;
         // Convert the evaluation array to a JSON object, excluding the first element
         const evaluationJson = evaluation.slice(1).reduce((acc, item) => {
             return {
@@ -81,6 +81,8 @@ export default function Evaluation() {
             body: JSON.stringify({
                 id_school_worker: teacherId,
                 id_student: studentId,
+                id_subject: subjectId,
+                average: average_points,
                 evaluation: JSON.stringify(evaluationJson)
             })
         });
