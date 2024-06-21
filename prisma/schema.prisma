@@ -53,23 +53,24 @@ model Department {
 }
 
 model Subject {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Course    Course[]
+  id         String       @id @default(cuid())
+  name       String       @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Course     Course[]
+  Evaluation Evaluation[]
 }
 
 model Course {
   id               String       @id @default(cuid())
   id_school_worker String
-  id_student       String
+  id_student       String?
   id_subject       String
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
-  key              String?
+  key              String
   school_worker    SchoolWorker @relation(fields: [id_school_worker], references: [id])
-  student          Student      @relation(fields: [id_student], references: [id])
+  student          Student?     @relation(fields: [id_student], references: [id])
   subject          Subject      @relation(fields: [id_subject], references: [id])
 }
 
@@ -80,8 +81,11 @@ model Evaluation {
   id_student       String
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
+  id_subject       String?
+  average          Float?
   school_worker    SchoolWorker @relation(fields: [id_school_worker], references: [id])
   student          Student      @relation(fields: [id_student], references: [id])
+  Subject          Subject?     @relation(fields: [id_subject], references: [id])
 }
 
 model QuestionList {

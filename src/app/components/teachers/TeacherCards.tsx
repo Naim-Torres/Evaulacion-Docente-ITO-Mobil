@@ -20,11 +20,12 @@ interface Props {
 
 export default function TeacherCards({ teacher, subject, studentId, evaluated }: Props) {
     const [isDisabled] = useState(evaluated);
-    const { setTeacherId, setStudentId } = useContext(EvaluationContext);
+    const { setTeacherId, setStudentId, setSubjectId } = useContext(EvaluationContext);
     const handleClick = () => {
         if (!isDisabled) {
             setTeacherId(teacher.id);
             setStudentId(studentId);
+            setSubjectId(subject.id);
         }
     }
 

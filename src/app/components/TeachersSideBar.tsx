@@ -48,7 +48,9 @@ export default function TeachersSideBar() {
                 let awaitCount = 0;
 
                 schoolWorkers.forEach((schoolWorker: Course) => {
-                    const found = evaluated.find((evaluated: any) => evaluated.id_school_worker === schoolWorker.school_worker.id);
+                    const found = evaluated.find((evaluated: any) => 
+                        evaluated.id_school_worker === schoolWorker.school_worker.id
+                        && evaluated.id_subject === schoolWorker.subject.id);
                     if (found) {
                         doneCount++;
                     } else {
