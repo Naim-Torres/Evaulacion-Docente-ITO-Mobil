@@ -8,6 +8,7 @@ import { Toaster, toast } from "sonner";
 import { useEffect } from 'react'
 import { FaGoogle } from 'react-icons/fa';
 import Image from 'next/image';
+import Link from "next/link";
 
 function LoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -133,9 +134,12 @@ function LoginPage() {
                                 </div>
                             </div>
                         </form>
-                        <div className="flex gap-3">
-                            <button onClick={handleGoogleLogin} className="secondary w-full"><FaGoogle /></button>
-                            <button onClick={onSubmit} className="w-full bg-primary-900 text-nowrap">Iniciar sesión</button>
+                        <div className="flex flex-col items-center gap-3">
+                            <div className="flex gap-3 w-full">
+                                <button onClick={handleGoogleLogin} className="secondary w-full"><FaGoogle /></button>
+                                <button onClick={onSubmit} className="w-full bg-primary-900 text-nowrap">Iniciar sesión</button>
+                            </div>
+                            <Link href={"/resetPassword/email"} className="text-sm text-slate-500 hover:underline">¿Olvidaste tu contraseña?</Link>
                         </div>
                     </div>
                 </div>
