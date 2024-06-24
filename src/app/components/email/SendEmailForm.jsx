@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react'
 import { toast, Toaster } from 'sonner';
 import { useRouter } from 'next/navigation';
 import CustomInput from '../CustomInput';
 import { useForm } from 'react-hook-form';
 import ConfirmIcon from '../icons/ConfirmIcon';
+import { resetPassword } from '@/app/actions/user/resetPassword';
 
 export default function SendEmailForm() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -12,16 +15,12 @@ export default function SendEmailForm() {
     const onSubmit = handleSubmit(async (data) => {
         toast.loading("Verificando correo");
 
-        //LÓGICA PARA ENVIAR CORREO
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve('Resolved')
-            }, 1000);
-        });
-
+        const emailResponse = await resetPassword(data.email);
+        console.log(emailResponse)
+        
         toast.dismiss();
 
-        if (true) {
+        if (emailResponse) {
             toast.success('El correo ha sido envíado correctamente');
         } else {
             toast.error('Error al enviar el correo');

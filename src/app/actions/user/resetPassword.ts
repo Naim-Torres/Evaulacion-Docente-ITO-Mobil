@@ -6,7 +6,7 @@ import { sendEmail } from "../email/sendEmail";
 import { ResetPasswordEmailTemplate } from "@/app/email_template/ResetPasswordEmailTemplate";
 import { ReactElement } from "react";
 
-const resetPassword = async ( email : string) => {
+export const resetPassword = async ( email : string) => {
     const user = await prisma.user.findUnique({
         where: {
             email

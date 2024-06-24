@@ -15,7 +15,7 @@ export const ResetPasswordEmailTemplate: React.FC<ResetPasswordEmailTemplateProp
       <p>
         Por favor haga click en el siguiente enlace, o copie y pegue en su navegador para completar el proceso:
       </p>
-      <a href={`${process.env.NEXTAUTH_URL}/reset-password?token=${passwordToken}`}>Cambiar contraseña</a>
+      <a href={`${process.env.NEXTAUTH_URL}/resetPassword/password?token=${passwordToken}`}>Cambiar contraseña</a>
       <p>
         Si usted no ha solicitado esto, por favor ignore este correo y su contraseña permanecerá sin cambios.
       </p>

@@ -1,11 +1,14 @@
+'use client';
+
 import React from 'react'
 import { toast, Toaster } from 'sonner';
 import { useRouter } from 'next/navigation';
 import CustomInput from '../CustomInput';
 import { useForm } from 'react-hook-form';
 import PasswordIcon from '../icons/PasswordIcon';
+import { changePassword } from '@/app/actions/user/changePassword';
 
-export default function ResetPasswordForm() {
+export default function ResetPasswordForm({ resetPasswordToken, oldPassword }) {
     const router = useRouter();
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
 
@@ -17,16 +20,11 @@ export default function ResetPasswordForm() {
 
         toast.loading("Cambiando contraseña");
 
-        //LÓGICA PARA ENVIAR CORREO
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve('Resolved')
-            }, 1000);
-        });
+        const resetPasswordResponse = await changePassword(resetPasswordToken, data.password);
 
         toast.dismiss();
 
-        if (true) {
+        if (resetPasswordResponse) {
             router.push('/resetPassword/success');
         } else {
             toast.error('Error al cambiar la contraseña');

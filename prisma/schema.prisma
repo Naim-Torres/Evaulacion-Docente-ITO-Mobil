@@ -14,7 +14,7 @@ model User {
   password              String?
   name                  String?
   role                  String?
-  resetPasswordToken    String?
+  resetPasswordToken    String?      @unique
   resetPasswordExpires  DateTime?
 
   createdAt             DateTime      @default(now())
