@@ -24,7 +24,6 @@ export default async function PasswordPage({ searchParams }) {
             />
         )
     } else {
-        // return <SendEmailForm />
-        return <InvalidToken />
+        return <SendEmailForm />
     }
 }

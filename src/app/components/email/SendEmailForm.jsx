@@ -23,10 +23,10 @@ export default function SendEmailForm() {
             toast.error('Email no encontrado');
             return;
         }
-        
+
         toast.dismiss();
 
-        if (emailResponse.data.error == null) {
+        if (emailResponse.status == 201) {
             toast.success('El correo ha sido enviado correctamente');
         } else {
             toast.error('Error al enviar el correo');
