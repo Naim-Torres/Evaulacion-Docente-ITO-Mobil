@@ -6,8 +6,6 @@ const withPWA = withPWAInit({
 
 const nextConfig = {};
 
-export default withPWA({
-  
-});
+export default withPWA({});
 /** @type {import('next').NextConfig} */
 
