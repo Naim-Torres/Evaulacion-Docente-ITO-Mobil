@@ -14,14 +14,20 @@ export default function SendEmailForm() {
 
     const onSubmit = handleSubmit(async (data) => {
         toast.loading("Verificando correo");
+        let emailResponse = null
 
-        const emailResponse = await resetPassword(data.email);
-        console.log(emailResponse)
+        try {
+            emailResponse = await resetPassword(data.email);
+        } catch (error) {
+            toast.dismiss();
+            toast.error('Email no encontrado');
+            return;
+        }
         
         toast.dismiss();
 
-        if (emailResponse) {
-            toast.success('El correo ha sido envíado correctamente');
+        if (emailResponse.data.error == null) {
+            toast.success('El correo ha sido enviado correctamente');
         } else {
             toast.error('Error al enviar el correo');
         }

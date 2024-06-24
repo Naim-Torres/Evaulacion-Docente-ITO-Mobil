@@ -18,7 +18,10 @@ export default async function PasswordPage({ searchParams }) {
         }
 
         return (
-            <ResetPasswordForm resetPasswordToken = {user.resetPasswordToken} oldPassword = {user.password}/>
+            <ResetPasswordForm 
+                resetPasswordToken = {user.resetPasswordToken} 
+                oldPassword = {user.password}
+            />
         )
     }else {
         return <SendEmailForm />

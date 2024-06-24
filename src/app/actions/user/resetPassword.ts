@@ -31,10 +31,18 @@ export const resetPassword = async ( email : string) => {
         }
     });
 
-    await sendEmail({
-        from: 'Acme <onboarding@resend.dev>',
-        to: [email],
-        subject: 'Restablecer contraseña',
-        react: ResetPasswordEmailTemplate({ email, passwordToken }) as React.ReactElement
-    });
+    try {
+        const sendedEmail = await sendEmail({
+            from: 'Acme <onboarding@resend.dev>',
+            to: [email],
+            subject: 'Restablecer contraseña',
+            react: ResetPasswordEmailTemplate({ email, passwordToken }) as React.ReactElement
+        });
+
+        return sendedEmail;
+    } catch (error) {
+        throw new Error('Error sending email');
+    }
+
+
 }
