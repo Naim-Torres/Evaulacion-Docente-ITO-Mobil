@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
 	function middleware(req) {
-    },
+	},
 	{
 		callbacks: {
 			authorized: ({ token }) => !!token,
@@ -11,4 +11,4 @@ export default withAuth(
 	}
 );
 
-export const config = { matcher: ["/", "/teachers", "/teachers/:path*"]};
+export const config = { matcher: ["/", "/teachers", "/teachers/:path*", "/profile"] };
