@@ -139,7 +139,7 @@ function LoginPage() {
                                 <button onClick={handleGoogleLogin} className="secondary w-full"><FaGoogle /></button>
                                 <button onClick={onSubmit} className="w-full bg-primary-900 text-nowrap">Iniciar sesión</button>
                             </div>
-                            <Link href={"/resetPassword/email"} className="text-sm text-slate-500 hover:underline">¿Olvidaste tu contraseña?</Link>
+                            <Link href={"/resetPassword/password"} className="text-sm text-slate-500 hover:underline">¿Olvidaste tu contraseña?</Link>
                         </div>
                     </div>
                 </div>

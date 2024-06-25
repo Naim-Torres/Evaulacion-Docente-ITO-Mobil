@@ -28,7 +28,7 @@ export const changePassword = async (resetPasswordToken: string, newPassword: st
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await db.user.update({
+    const userUpdate = await db.user.update({
         where: {
             id: user.id
         },
@@ -38,4 +38,11 @@ export const changePassword = async (resetPasswordToken: string, newPassword: st
             resetPasswordExpires: null
         }
     })
+
+    //if the update is failed, return an error
+    if (!userUpdate) {
+        throw new Error('Error updating user')
+    }
+
+    return {message: 'Password updated', ok: true}
 }

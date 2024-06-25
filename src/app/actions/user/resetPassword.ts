@@ -6,7 +6,7 @@ import { sendEmail } from "../email/sendEmail";
 import { ResetPasswordEmailTemplate } from "@/app/email_template/ResetPasswordEmailTemplate";
 import { ReactElement } from "react";
 
-export const resetPassword = async ( email : string) => {
+export const resetPassword = async (email: string) => {
     const user = await prisma.user.findUnique({
         where: {
             email
@@ -23,7 +23,7 @@ export const resetPassword = async ( email : string) => {
 
     await prisma.user.update({
         where: {
-            id : user.id
+            id: user.id
         },
         data: {
             resetPasswordToken: passwordToken,
@@ -31,10 +31,22 @@ export const resetPassword = async ( email : string) => {
         }
     });
 
-    await sendEmail({
-        from: 'Acme <onboarding@resend.dev>',
-        to: [email],
-        subject: 'Restablecer contraseña',
-        react: ResetPasswordEmailTemplate({ email, passwordToken }) as React.ReactElement
-    });
+    try {
+        const sendedEmail = await sendEmail({
+            from: 'Acme <onboarding@resend.dev>',
+            to: [email],
+            subject: 'Restablecer contraseña',
+            react: ResetPasswordEmailTemplate({ email, passwordToken }) as React.ReactElement
+        });
+
+        if (sendedEmail.error != null) {
+            return { response: sendedEmail, status: 403 };
+        }
+
+        return { response: sendedEmail, status: 201 };
+    } catch (error) {
+        throw new Error('Error sending email');
+    }
+
+
 }

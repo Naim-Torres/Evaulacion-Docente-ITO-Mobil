@@ -14,11 +14,10 @@ model User {
   password              String?
   name                  String?
   role                  String?
-  resetPasswordToken    String?      @unique
-  resetPasswordExpires  DateTime?
-
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
+  resetPasswordExpires  DateTime?
+  resetPasswordToken    String?       @unique
   school_worker_profile SchoolWorker?
   student_profile       Student?
 }

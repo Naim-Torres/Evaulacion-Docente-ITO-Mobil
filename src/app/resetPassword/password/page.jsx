@@ -1,7 +1,7 @@
 import db from "../../libs/db"
 import ResetPasswordForm from "../../components/email/ResetPasswordForm";
 import SendEmailForm from "../../components/email/SendEmailForm";
-
+import InvalidToken from "@/app/components/email/InvalidToken";
 
 export default async function PasswordPage({ searchParams }) {
     if (searchParams.token) {
@@ -13,14 +13,17 @@ export default async function PasswordPage({ searchParams }) {
 
         if (!user) {
             return (
-                <p> El token no es valido</p>
+                <InvalidToken />
             )
         }
 
         return (
-            <ResetPasswordForm resetPasswordToken = {user.resetPasswordToken} oldPassword = {user.password}/>
+            <ResetPasswordForm
+                resetPasswordToken={user.resetPasswordToken}
+                oldPassword={user.password}
+            />
         )
-    }else {
+    } else {
         return <SendEmailForm />
     }
 }

@@ -22,6 +22,7 @@ export default function ResetPasswordForm({ resetPasswordToken, oldPassword }) {
 
         const resetPasswordResponse = await changePassword(resetPasswordToken, data.password);
 
+        console.log(resetPasswordResponse);
         toast.dismiss();
 
         if (resetPasswordResponse) {
