@@ -12,7 +12,9 @@ interface Course {
         name: string;
         evaluation: any[];
     };
-    subject: string;
+    subject: {
+        id: string;
+    };
 }
 
 interface User {
