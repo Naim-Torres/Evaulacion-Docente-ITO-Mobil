@@ -5,12 +5,14 @@ import TeacherCards from "../components/teachers/TeacherCards";
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import { useSession } from "next-auth/react";
+import EmptyIcon from "../components/icons/EmptyIcon";
 
 export default function Teachers() {
     const [teachers, setTeachers] = useState([]);
     const { data: session } = useSession();
     const [studentId, setStudentId] = useState();
     const [evaluated, setEvaluated] = useState();
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchTeachers = async () => {
         const res = await fetch(`/api/student/${session?.user?.id}`);
@@ -25,11 +27,10 @@ export default function Teachers() {
                 subject: course.subject
             }));
             setTeachers(schoolWorkers);
-
         } else {
             toast.error('Error al procesar su petición');
-            console.log(res);
         }
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -41,12 +42,12 @@ export default function Teachers() {
     return (
         <>
             <Toaster theme="light" richColors visibleToasts={1} position="top-center" />
-            <div className="flex flex-col lg:flex-row w-full">
+            { !isLoading &&
+            (<div className="flex flex-col lg:flex-row w-full">
                 <MobileTeachersInfo className="block lg:hidden" />
-
-                <div className="grid grid-cols-2 gap-6 sm:gap-8 w-full p-8">
-                    {teachers.length > 0 ? (
-                        teachers.map(teacher => (
+                {teachers.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-6 sm:gap-8 w-full p-8">
+                        {teachers.map(teacher => (
 
                             <TeacherCards 
                                 key={teacher.id} 
@@ -59,12 +60,15 @@ export default function Teachers() {
                                         && evaluation.id_subject === teacher.subject.id)
                                 }
                             />
-                        ))
+                        ))}
+                        </div>
                     ) : (
-                        <p>No hay evaluaciones por realizar</p>
+                        <div className="flex flex-col items-center justify-center h-screen w-full">
+                            <EmptyIcon />
+                            <span className="text-center text-xl mt-4">No hay profesores asignados</span>
+                        </div>
                     )}
-                </div>
-            </div>
+                </div>)}
         </>
     )
 }

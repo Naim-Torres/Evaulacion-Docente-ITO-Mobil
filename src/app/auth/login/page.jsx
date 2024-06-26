@@ -136,7 +136,6 @@ function LoginPage() {
                         </form>
                         <div className="flex flex-col items-center gap-3">
                             <div className="flex gap-3 w-full">
-                                <button onClick={handleGoogleLogin} className="secondary w-full"><FaGoogle /></button>
                                 <button onClick={onSubmit} className="w-full bg-primary-900 text-nowrap">Iniciar sesión</button>
                             </div>
                             <Link href={"/resetPassword/password"} className="text-sm text-slate-500 hover:underline">¿Olvidaste tu contraseña?</Link>

@@ -27,7 +27,7 @@ export default function ProfilePage() {
         const words = name.split(' ');
         let initials = '';
 
-        words.map(word => initials += word[0]);
+        words.slice(0 , words.length > 1 ? 2 : words.length).map(word => initials += word[0]);
 
         return initials;
     }
