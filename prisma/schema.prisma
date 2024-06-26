@@ -1,130 +1,126 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-// Define data model for user(cuid, email, password, name, role, timestamp)
 model User {
-    id                    String        @id @default(cuid())
-    email                 String        @unique
-    password              String?
-    name                  String?
-    role                  String?
-    student_profile       Student?
-    school_worker_profile SchoolWorker?
-    createdAt             DateTime      @default(now())
-    updatedAt             DateTime      @updatedAt
+  id                    String        @id @default(cuid())
+  email                 String        @unique
+  password              String?
+  name                  String?
+  role                  String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  resetPasswordExpires  DateTime?
+  resetPasswordToken    String?       @unique
+  school_worker_profile SchoolWorker?
+  student_profile       Student?
 }
 
-// Define data model for student(cuid, no_control, semester, id_user, timestamp)
 model Student {
-    id         String       @id @default(cuid())
-    no_control String       @unique
-    semester   String?
-    user       User         @relation(fields: [id_user], references: [id])
-    id_user    String       @unique
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
-    Course     Course[]
-    evaluation Evaluation[]
+  id         String       @id @default(cuid())
+  no_control String       @unique
+  semester   String?
+  id_user    String       @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Course     Course[]
+  evaluation Evaluation[]
+  user       User         @relation(fields: [id_user], references: [id])
 }
 
-// Define data model for school worker(cuid, id_department, id_user, timestamp)
 model SchoolWorker {
-    id            String       @id @default(cuid())
-    department    Department   @relation(fields: [id_department], references: [id])
-    id_department String       @unique
-    user          User         @relation(fields: [id_user], references: [id])
-    id_user       String       @unique
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @updatedAt
-    Course        Course[]
-    evaluation    Evaluation[]
+  id            String       @id @default(cuid())
+  id_department String
+  id_user       String       @unique
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  Course        Course[]
+  evaluation    Evaluation[]
+  department    Department   @relation(fields: [id_department], references: [id])
+  user          User         @relation(fields: [id_user], references: [id])
 }
 
-// Define data model for department(cuid, name ,name, timestamp)
 model Department {
-    id           String         @id @default(cuid())
-    name         String         @unique
-    SchoolWorker SchoolWorker[]
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  name         String         @unique
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  SchoolWorker SchoolWorker[]
 }
 
-// Data model for subject(id, name, timestamp)
 model Subject {
-    id        String   @id @default(cuid())
-    name      String   @unique
-    Course    Course[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id         String       @id @default(cuid())
+  name       String       @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Course     Course[]
+  Evaluation Evaluation[]
 }
 
-// Data model for course(id, school_worker, id_student,timestamp)
 model Course {
-    id               String       @id @default(cuid())
-    school_worker    SchoolWorker @relation(fields: [id_school_worker], references: [id])
-    id_school_worker String
-    student          Student      @relation(fields: [id_student], references: [id])
-    id_student       String
-    subject          Subject      @relation(fields: [id_subject], references: [id])
-    id_subject       String
-    createdAt        DateTime     @default(now())
-    updatedAt        DateTime     @updatedAt
+  id               String       @id @default(cuid())
+  id_school_worker String
+  id_student       String?
+  id_subject       String
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  key              String
+  school_worker    SchoolWorker @relation(fields: [id_school_worker], references: [id])
+  student          Student?     @relation(fields: [id_student], references: [id])
+  subject          Subject      @relation(fields: [id_subject], references: [id])
 }
 
-// Data model for evaluation(id composite for id_student and id_school_worker), evaluation(JSON), timestamp)
 model Evaluation {
-    id               String       @id @default(cuid())
-    evaluation       String
-    school_worker    SchoolWorker @relation(fields: [id_school_worker], references: [id])
-    id_school_worker String
-    student          Student      @relation(fields: [id_student], references: [id])
-    id_student       String
-    createdAt        DateTime     @default(now())
-    updatedAt        DateTime     @updatedAt
+  id               String       @id @default(cuid())
+  evaluation       String
+  id_school_worker String
+  id_student       String
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  id_subject       String?
+  average          Float?
+  course           String?
+  school_worker    SchoolWorker @relation(fields: [id_school_worker], references: [id])
+  student          Student      @relation(fields: [id_student], references: [id])
+  Subject          Subject?     @relation(fields: [id_subject], references: [id])
 }
 
-//Data model for question list(id, question, timestamp)
 model QuestionList {
-    id        String   @id @default(cuid())
-    question  String   @unique
-    active    Boolean  @default(false)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  question  String   @unique
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  category  String?  @default("Preguntas adicionales")
 }
 
 model Ciclo {
-    id          Int      @id @default(autoincrement())
-    nombre      String
-    fechaInicio DateTime
-    fechaFin    DateTime
-    estado      String   @default("PENDIENTE")
-    tipo        String
-    fases       Fase[]
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  fechaInicio DateTime
+  fechaFin    DateTime
+  estado      String   @default("PENDIENTE")
+  tipo        String
+  fases       Fase[]
 
-    @@map("ciclos")
+  @@map("ciclos")
 }
 
 model Fase {
-    id          Int      @id @default(autoincrement())
-    nombre      String
-    fechaInicio DateTime
-    fechaFin    DateTime
-    estado      String   @default("PENDIENTE")
-    tipo        String
-    cicloId     Int
-    ciclo       Ciclo    @relation(fields: [cicloId], references: [id])
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  fechaInicio DateTime
+  fechaFin    DateTime
+  estado      String   @default("PENDIENTE")
+  tipo        String
+  cicloId     Int
+  ciclo       Ciclo    @relation(fields: [cicloId], references: [id])
 
-    @@map("fases")
+  @@map("fases")
 }

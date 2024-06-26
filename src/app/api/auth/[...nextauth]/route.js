@@ -34,6 +34,8 @@ export const authOptions = {
 
 				if (!userFound) throw new Error("Usuario no encontrado");
 
+                if (userFound.role !== "student") throw new Error("Usuario no autorizado");
+
 				const matchPassword = credentials.password === userFound.password;
 				if (!matchPassword) throw new Error("Contraseña incorrecta");
 
@@ -90,9 +92,9 @@ export const authOptions = {
 			return session;
 		},
 	},
-	/* pages: {
+	pages: {
 		signIn: "/auth/login",
-	}, */
+	},  
 };
 
 const handler = NextAuth(authOptions);

@@ -2,36 +2,37 @@
 
 import CustomInput from "@/app/components/CustomInput";
 import { useForm } from 'react-hook-form';
-// import { signIn, getSession } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from "next/navigation"
 import { Toaster, toast } from "sonner";
 import { useEffect } from 'react'
 import { FaGoogle } from 'react-icons/fa';
 import Image from 'next/image';
+import Link from "next/link";
 
 function LoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const router = useRouter();
 
-    // useEffect(() => {
-    //     const checkSession = async () => {
-    //         const session = await getSession()
-    //         if (session) {
-    //             router.push('/')
-    //         }
-    //     }
-    //     checkSession()
-    // }, [])
+    useEffect(() => {
+        const checkSession = async () => {
+            const session = await getSession()
+            if (session) {
+                router.push('/')
+            }
+        }
+        checkSession()
+    }, [])
 
     const onSubmit = handleSubmit(async (data) => {
         // CustomToast.loading('Iniciando sesión');
         toast.loading("Iniciando sesión");
 
-        // const res = await signIn('credentials', {
-        //     email: data.email,
-        //     password: data.password,
-        //     redirect: false
-        // })
+        const res = await signIn('credentials', {
+            email: data.email,
+            password: data.password,
+            redirect: false
+        })
 
         toast.dismiss();
 
@@ -44,7 +45,7 @@ function LoginPage() {
     })
 
     const handleGoogleLogin = () => {
-        signIn('google');
+        signIn('google', { callbackUrl: '/' });
     };
 
     return (
@@ -133,9 +134,11 @@ function LoginPage() {
                                 </div>
                             </div>
                         </form>
-                        <div className="flex gap-3">
-                            <button onClick={handleGoogleLogin} className="secondary w-full"><FaGoogle /></button>
-                            <button onClick={onSubmit} className="w-full bg-primary-900 text-nowrap">Iniciar sesión</button>
+                        <div className="flex flex-col items-center gap-3">
+                            <div className="flex gap-3 w-full">
+                                <button onClick={onSubmit} className="w-full bg-primary-900 text-nowrap">Iniciar sesión</button>
+                            </div>
+                            <Link href={"/resetPassword/password"} className="text-sm text-slate-500 hover:underline">¿Olvidaste tu contraseña?</Link>
                         </div>
                     </div>
                 </div>
