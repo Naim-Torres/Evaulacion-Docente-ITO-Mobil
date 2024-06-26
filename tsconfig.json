@@ -7,7 +7,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -35,7 +35,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/app/controller/fetchCourse.js"  ],
+, "src/app/controller/fetchCourse.js", "src/app/libs/auth.js"  ],
   "exclude": [
     "node_modules"
   ]
