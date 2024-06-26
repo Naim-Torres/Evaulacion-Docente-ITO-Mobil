@@ -39,7 +39,7 @@ export async function GET(request: Request, { params }: Params) {
             return NextResponse.json({ error: "Error", message: "Student not found" }, { status: 404 });
         }
 
-        student["evaluation"] = evaluation;
+        (student as any)["evaluation"] = evaluation;
 
         return NextResponse.json(student, { status: 200 });
     } catch (error: any) {
