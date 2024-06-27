@@ -3,22 +3,77 @@
 import { useState, useEffect } from "react";
 import { fetchCycle } from "@/app/teachers/controller";
 import MobileTeachersInfoSkeleton from "../skeleton/skeletonUIs/MobileTeachersInfoSkeleton";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 interface Props {
     className?: string
 }
 
+interface Course {
+    school_worker: {
+        id: string;
+        name: string;
+        evaluation: any[];
+    };
+    subject: {
+        id: string;
+    };
+}
+
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+    role: string;
+}
+
 export default function MobileTeachersInfo({ className = '' }: Props) {
     const [date, setDate] = useState({ day: '', month: '', year: 0, isActive: false });
     const [isLoading, setIsLoading] = useState(true);
+    const [done, setDone] = useState(0);
+    const [notDone, setNotDone] = useState(0);
+    const { data: session } = useSession();
+    const user = session?.user as User;
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetchData = async () => {
             setDate(await fetchCycle());
+            const res = await fetch(`/api/student/${user.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                const evaluated = data.evaluation;
+                const schoolWorkers: Course[] = data.Course.map((course: any) => ({
+                    school_worker: course.school_worker,
+                    subject: course.subject
+                }));
+
+
+                let doneCount = 0;
+                let awaitCount = 0;
+
+                schoolWorkers.forEach((schoolWorker: Course) => {
+                    const found = evaluated.find((evaluated: any) => 
+                        evaluated.id_school_worker === schoolWorker.school_worker.id
+                        && evaluated.id_subject === schoolWorker.subject.id);
+                    if (found) {
+                        doneCount++;
+                    } else {
+                        awaitCount++;
+                    }
+                });
+
+                setDone(doneCount);
+                setNotDone(awaitCount);
+
+            } else {
+                toast.error('Ocurrió un error al cargar los datos');
+            }
             setIsLoading(false);
         }
 
-        fetch();
+        fetchData();
     }, []);
 
     return (
@@ -51,13 +106,25 @@ export default function MobileTeachersInfo({ className = '' }: Props) {
                         {/* PROFESORES POR EVALUAR */}
                         <div className="flex flex-col justify-end gap-2 border-l-4 border-primary-500 px-4">
                             <h3 className="text-xs sm:text-base lg:text-lg text-black">Profesores por evaluar</h3>
-                            <p className="not-italic text-3xl text-black font-bold">4</p>
+                            {date.isActive ?
+                                (
+                                    <p className="not-italic text-3xl text-black font-bold">{notDone}</p>
+                                ): (
+                                    <p className="not-italic text-3xl text-black font-bold">0</p>   
+                                )
+                            }
                         </div>
 
                         {/* PROFESORES EVALUADOS */}
                         <div className="flex flex-col justify-end gap-2 border-l-4 border-primary-500 px-4">
                             <h3 className="text-xs sm:text-base lg:text-lg text-black">Profesores evaluados</h3>
-                            <p className="not-italic text-3xl text-black font-bold">0</p>
+                            {date.isActive ?
+                                (
+                                    <p className="not-italic text-3xl text-black font-bold">{done}</p>
+                                ): (
+                                    <p className="not-italic text-3xl text-black font-bold">0</p>
+                                )
+                            }
                         </div>
                     </div>
                 </div>

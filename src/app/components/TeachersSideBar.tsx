@@ -50,7 +50,7 @@ export default function TeachersSideBar() {
                 let awaitCount = 0;
 
                 schoolWorkers.forEach((schoolWorker: Course) => {
-                    const found = evaluated.find((evaluated: any) => 
+                    const found = evaluated.find((evaluated: any) =>
                         evaluated.id_school_worker === schoolWorker.school_worker.id
                         && evaluated.id_subject === schoolWorker.subject.id);
                     if (found) {
@@ -106,13 +106,25 @@ export default function TeachersSideBar() {
 
                     {/* PROFESORES POR EVALUAR */}
                     <div className="flex flex-col justify-end gap-2 w-1/3 border-x-2 border-white px-4">
-                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{notDone}</p>
+
+                        {date.isActive ? (
+                            <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{notDone}</p>
+                        ) : (
+                            <p className="not-italic text-4xl xl:text-5xl text-white font-bold">0</p>
+                        )
+                        }
                         <h3 className="text-base xl:text-lg text-white/60">Profesores por evaluar</h3>
                     </div>
 
                     {/* PROFESORES EVALUADOS */}
                     <div className="flex flex-col justify-end gap-2 w-1/3 pl-4">
-                        <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{done}</p>
+                        {date.isActive ?
+                            (
+                                <p className="not-italic text-4xl xl:text-5xl text-white font-bold">{done}</p>
+                            ) : (
+                                <p className="not-italic text-4xl xl:text-5xl text-white font-bold">0</p>
+                            )
+                        }
                         <h3 className="text-base xl:text-lg text-white/60">Profesores evaluados</h3>
                     </div>
                 </div>

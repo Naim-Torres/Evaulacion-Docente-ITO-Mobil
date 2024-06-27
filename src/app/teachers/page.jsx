@@ -6,17 +6,18 @@ import { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 import { useSession } from "next-auth/react";
 import EmptyIcon from "../components/icons/EmptyIcon";
+import { fetchCycle } from "./controller";
 
-export default function Teachers() {
+export default  function Teachers()  {
     const [teachers, setTeachers] = useState([]);
     const { data: session } = useSession();
     const [studentId, setStudentId] = useState();
     const [evaluated, setEvaluated] = useState();
     const [isLoading, setIsLoading] = useState(true);
+    const [date, setDate] = useState({ day: '', month: '', year: 0, isActive: false });
 
     const fetchTeachers = async () => {
         const res = await fetch(`/api/student/${session?.user?.id}`);
-
         if (res.status == 200) {
             const resJson = await res.json();
             const studentId = resJson.id;
@@ -33,11 +34,23 @@ export default function Teachers() {
         setIsLoading(false);
     }
 
+    const getActualTimeFrame = async () => {
+        const actualDate = await fetchCycle();
+        setDate(actualDate);
+        if (!actualDate.isActive) {
+         setIsLoading(false)
+        }
+    }
+
     useEffect(() => {
-        if (session?.user) {
+        getActualTimeFrame();
+    }, []);
+
+    useEffect(() => {
+        if (session?.user && date.isActive) {
             fetchTeachers();
         }
-    }, [session?.user]);
+    }, [session?.user, date.isActive]);
 
     return (
         <>
