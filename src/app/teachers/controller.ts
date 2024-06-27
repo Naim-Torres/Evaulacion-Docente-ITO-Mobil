@@ -18,7 +18,7 @@ export const fetchCycle = async () => {
             }
         }
     } else {
-        toast.error('Error al procesar su solicitud');
+        //toast.error('Error al obtener la fecha de evaluación');
     }
 
     return {
