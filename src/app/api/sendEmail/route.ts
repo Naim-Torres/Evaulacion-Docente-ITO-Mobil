@@ -47,7 +47,7 @@ export async function GET(request: Request, response: Response) {
 
     if(new Date(startOfDay).setHours(0,0,0,0) !== now.setHours(0,0,0,0)){
         return NextResponse.json(
-            { message: "Today is not the start of the phase" },
+            {now},
             { status: 404 }
         );
     }
