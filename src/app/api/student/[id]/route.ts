@@ -25,6 +25,12 @@ export async function GET(request: Request, { params }: Params) {
             },
         });
 
+        const time_frame = await db.ciclo.findFirst({
+            where: {
+                estado: "ACTIVO"
+            }
+        })
+
         const evaluation = await db.evaluation.findMany({
             select: {
                 id_school_worker: true,
@@ -32,6 +38,10 @@ export async function GET(request: Request, { params }: Params) {
             },
             where: {
                 id_student: student?.id,
+                createdAt: {
+                    gte: time_frame?.fechaInicio,
+                    lte: time_frame?.fechaFin
+                }
             }
         });
 

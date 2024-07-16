@@ -1,6 +1,7 @@
 import CredentialProviders from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import db from "@/app/libs/db";
+import bcrypt from "bcrypt";
 
 export const authOptions = {
 	providers: [
@@ -35,7 +36,8 @@ export const authOptions = {
 
                 if (userFound.role !== "student") throw new Error("Usuario no autorizado");
 
-				const matchPassword = credentials.password === userFound.password;
+                const matchPassword =  bcrypt.compare(credentials.password, userFound.password);
+
 				if (!matchPassword) throw new Error("Contraseña incorrecta");
 
 				return userFound
