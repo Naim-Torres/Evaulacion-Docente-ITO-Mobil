@@ -61,7 +61,6 @@ export default  function Teachers()  {
                 {teachers.length > 0 ? (
                         <div className="grid grid-cols-2 gap-6 sm:gap-8 w-full p-8">
                         {teachers.map(teacher => (
-
                             <TeacherCards 
                                 key={teacher.id} 
                                 teacher={teacher.school_worker} 

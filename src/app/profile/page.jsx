@@ -149,8 +149,8 @@ export default function ProfilePage() {
                                     },
                                     validate: value => value === watch('password') || "Las contraseñas no coinciden"
                                 })} type="password" className={`w-full ${errors.email ? 'border-2 focus:border-red-500/75 border-red-500/75' : ''}`} placeholder="Confirmar contraseña" />
-                                {errors.password && (
-                                    <span className="pl-5 text-sm font-normal text-red-500">{errors.password.message}</span>
+                                {errors.confirmPassword && (
+                                    <span className="pl-5 text-sm font-normal text-red-500">{errors.confirmPassword.message}</span>
                                 )}
                             </div>
                         </div>

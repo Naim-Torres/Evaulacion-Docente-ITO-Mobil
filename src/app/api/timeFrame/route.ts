@@ -36,6 +36,10 @@ export async function GET(request: Request) {
             }
         }) : null;
 
+        if(!activePhase){
+            return NextResponse.json({ message: "No active phase found" }, { status: 404 });
+        }
+
         return NextResponse.json({ activeCycle, activePhase }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ message: error.message }, { status: 500 });
