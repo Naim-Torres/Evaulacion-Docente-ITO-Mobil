@@ -18,7 +18,7 @@ export async function GET() {
             },
         },
     });
-    
+
     if (!activeCycle) {
         return NextResponse.json(
             { message: "No active cycle found" },
@@ -46,7 +46,7 @@ export async function GET() {
 
     if(new Date(startOfDay).setHours(0,0,0,0) !== now.setHours(0,0,0,0)){
         return NextResponse.json(
-            {now},
+            {now, jaime: new Date(startOfDay).setHours(0,0,0,0)},
             { status: 404 }
         );
     }
