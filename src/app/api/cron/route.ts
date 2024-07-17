@@ -5,7 +5,7 @@ import { NotifyEvaluationTimeFrame } from "@/app/email_template/NotifyEvaluation
 
 export async function GET() {
     try {
-    const now = new Date();
+    /* const now = new Date();
 
     const activeCycle = await db.ciclo.findFirst({
         where: {
@@ -49,7 +49,7 @@ export async function GET() {
             {now, jaime: new Date(startOfDay).setHours(0,0,0,0)},
             { status: 404 }
         );
-    }
+    } */
 		const emails = await db.user.findMany({
 			select: {
 				email: true,
