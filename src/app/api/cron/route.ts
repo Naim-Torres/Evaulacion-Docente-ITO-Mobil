@@ -4,8 +4,8 @@ import { sendEmail } from "@/app/actions/email/sendEmail";
 import { NotifyEvaluationTimeFrame } from "@/app/email_template/NotifyEvaluationTimeFrameEmail";
 
 export async function GET() {
-    try {
-    /* const now = new Date();
+	try {
+		/* const now = new Date();
 
     const activeCycle = await db.ciclo.findFirst({
         where: {
@@ -59,31 +59,17 @@ export async function GET() {
 			},
 		});
 
-		//Send an email to all students each one with a 2 sec delay
-		for (const email of emails) {
-            await new Promise((resolve) => {
-                
-				setTimeout(async () => {
-					const sendedEmail = await sendEmail({
-						from: "Acme <onboarding@resend.dev>",
-						to: [email.email],
-						subject: "Recuerda hacer tu evaluación",
-						react: NotifyEvaluationTimeFrame({
-							email: email.email,
-						}) as React.ReactElement,
-					})
-                    resolve(
-                        sendedEmail
-                    )
-				}, 1000);
-			})
-		}
+		const sendedEmail = await sendEmail({
+			from: "Acme <onboarding@resend.dev>",
+			to: ["19161425@itoaxaca.edu.mx"],
+			subject: "Recuerda hacer tu evaluación",
+			react: NotifyEvaluationTimeFrame({
+				email: "19161425@itoaxaca.edu.mx",
+			}) as React.ReactElement,
+		});
 
-		return NextResponse.json({ emails }, { status: 201 });
-    }catch(e){
-        return NextResponse.json(
-            { message: e.message },
-            { status: 500 }
-        );
-    }
-  }
+		return NextResponse.json({ sendedEmail }, { status: 201 });
+	} catch (e) {
+		return NextResponse.json({ message: e.message }, { status: 500 });
+	}
+}
