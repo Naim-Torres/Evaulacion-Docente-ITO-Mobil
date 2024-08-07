@@ -36,7 +36,7 @@ export const authOptions = {
 
                 if (userFound.role !== "student") throw new Error("Usuario no autorizado");
 
-                const matchPassword =  bcrypt.compare(credentials.password, userFound.password);
+                const matchPassword =  bcrypt.compareSync(credentials.password, userFound.password);
 
 				if (!matchPassword) throw new Error("Contraseña incorrecta");
 

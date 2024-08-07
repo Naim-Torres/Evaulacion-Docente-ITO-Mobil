@@ -27,7 +27,7 @@ export default function ProfilePage() {
         const words = name.split(' ');
         let initials = '';
 
-        words.slice(0 , words.length > 1 ? 2 : words.length).map(word => initials += word[0]);
+        words.slice(0, words.length > 1 ? 2 : words.length).map(word => initials += word[0]);
 
         return initials;
     }
@@ -128,7 +128,11 @@ export default function ProfilePage() {
                                     maxLength: {
                                         value: 40,
                                         message: 'La contraseña es demasiado larga'
-                                    }
+                                    },
+                                    pattern: {
+                                        value: /^\S*$/,
+                                        message: "La contraseña no es válida"
+                                    },
                                 })} type="password" className={`w-full ${errors.email ? 'border-2 focus:border-red-500/75 border-red-500/75' : ''}`} placeholder="Contraseña" />
                                 {errors.password && (
                                     <span className="pl-5 text-sm font-normal text-red-500">{errors.password.message}</span>
@@ -153,6 +157,15 @@ export default function ProfilePage() {
                                     <span className="pl-5 text-sm font-normal text-red-500">{errors.confirmPassword.message}</span>
                                 )}
                             </div>
+                        </div>
+                    )}
+
+                    {isEditable && (
+                        <div className="flex flex-col text-sm text-slate-600">
+                            <span className="font-semibold">Se recomienda que la contraseña contenga:</span>
+                            <span>Al menos un número</span>
+                            <span>Al menos un caracter especial</span>
+                            <span>Al menos una mayúscula</span>
                         </div>
                     )}
 
