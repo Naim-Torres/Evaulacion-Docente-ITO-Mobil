@@ -14,9 +14,8 @@ export async function POST(request: Request) {
 
 	} catch (error: any) {
         if (error.code === 'P2003') {
-            return NextResponse.json({error: 'error', message: 'Invalid data' }, { status: 400 });
+            return NextResponse.json({error: 'error', message: error.message }, { status: 400 });
         }
-        console.error(error);
 		return NextResponse.json({ error: 'error', message: error.message }, { status: 500 });
 	}
 }

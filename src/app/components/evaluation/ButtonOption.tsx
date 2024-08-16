@@ -18,8 +18,8 @@ export default function ButtonOption({ className, emoji, description, points, se
         <button disabled={disabled} onClick={onClick} className={`${className} flex justify-start gap-4 rounded-lg ${disabled ? 'opacity-50' : ''} ${selectedIndex == index ? 'bg-primary-900 shadow-md hover:shadow-lg' : 'bg-primary-200 hover:shadow-md'}`}>
             <p className="text-5xl">{emoji}</p>
             <div className="flex flex-col items-start">
-                <span className={`${selectedIndex == index ? 'text-white' : 'text-primary-900'} text-lg md:text-xl duration-300`}>{description}</span>
-                <span className="italic font-normal text-primary-500">{points} puntos</span>
+                <span className={`${selectedIndex == index ? 'text-white' : 'text-primary-900'} md:text-xl duration-300 text-nowrap`}>{description}</span>
+                <span className="italic font-normal text-primary-500 text-nowrap text-sm md:text-base">{points} puntos</span>
             </div>
         </button>
     )

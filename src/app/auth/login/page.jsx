@@ -76,7 +76,7 @@ function LoginPage() {
                         >
                             <h2 className="title text-white mt-8">Bienvenido</h2>
                             <p className="font-light text-sm text-white">
-                                Estas a punto de entrar al sistema de evaluación docente por honorarios, por favor recuerda hacer un buen uso de la información...
+                                Estas apunto de entrar a la aplicación para realizar la evaluación docente por horarios.
                             </p>
                         </div>
 
@@ -96,6 +96,11 @@ function LoginPage() {
                                     sm:mb-0
                                 "
                             >Iniciar sesión</h1>
+
+                            <div className="flex justify-center gap-4 text-sm">
+                                <a href={process.env.WORKFORCE_APP_URL} target="_black" rel="noopener noreferrer" className="w-full text-center py-2 px-4 rounded-md duration-300 cursor-pointer hover:bg-primary-200">Personal</a>
+                                <span className="w-full text-white text-center py-2 px-4 rounded-md bg-primary-900 duration-300 cursor-pointer hover:bg-primary-900/95">Estudiantes</span>
+                            </div>
 
                             <div className="flex flex-col items-end gap-4 mb-8">
                                 {/* EMAIL */}
