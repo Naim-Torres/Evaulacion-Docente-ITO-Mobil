@@ -6,7 +6,7 @@ export default function EvaluationSideBar() {
             <ol className="flex flex-col gap-2 list-decimal list-inside text-white/80 mt-4 text-lg">
                 <li>Lee cada pregunta cuidadosamente.</li>
                 <li>Selecciona la opción que mejor describa tu experiencia. </li>
-                <li>Haz clic en el botón "Enviar" para completar la evaluación.</li>
+                <li>Haz clic en el botón &quot;Enviar evaluación&quot; para completar la evaluación.</li>
             </ol>
         </div>
     )
