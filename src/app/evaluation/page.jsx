@@ -25,13 +25,27 @@ export default function Evaluation() {
     const [evaluation, setEvaluation] = useState([{text:'', id:"", points: 0}]);
     const navigation = useRouter();
     const [scope, animate] = useAnimate();
-    const { teacherId, studentId, subjectId } = useContext(EvaluationContext);
+    const { teacherId, studentId, subjectId, setTeacherId, setStudentId, setSubjectId } = useContext(EvaluationContext);
 
     useEffect(() => {
-        if (teacherId && studentId) {
+        if (teacherId && studentId && teacherId !== "" && studentId !== "") {
+            localStorage.setItem('teacherId', teacherId);
+            localStorage.setItem('studentId', studentId);
+            localStorage.setItem('subjectId', subjectId);
             fetchQuestions();
         }
-    }, [teacherId, studentId]);
+    }, [teacherId, studentId, subjectId]);
+
+    useEffect(() => {
+        const savedTeacherId = localStorage.getItem('teacherId');
+        const savedStudentId = localStorage.getItem('studentId');
+        const savedSubjectId = localStorage.getItem('subjectId');
+        if (savedTeacherId && savedStudentId) {
+            setTeacherId(savedTeacherId);
+            setStudentId(savedStudentId);
+            setSubjectId(savedSubjectId);
+        }
+    }, []);
 
     // Change the question that it shows (change the state):
     const changeQuestion = async (selectedIndex) => {
@@ -88,8 +102,9 @@ export default function Evaluation() {
         });
 
         const data = await response.json();
+
         if (data.error) {
-            toast.error(data.error);
+            toast.error("Error al enviar la evaluación");
         } else {
             toast.success('¡Evaluación enviada con éxito!');
         }   
@@ -97,6 +112,10 @@ export default function Evaluation() {
 
     // Manage the onClick button:
     const nextQuestion = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
         if (progress.progress == progress.limit) {
             fetchEvaluation();
             navigation.push('/teachers');
@@ -135,14 +154,14 @@ export default function Evaluation() {
                 <p
                     ref={scope}
                     className="
-                        px-0 py-4 text-center text-3xl font-bold
-                        md:px-4 md:py-8 md:text-4xl
-                        lg:py-8 lg:text-5xl
+                        px-0 py-4 text-center text-xl font-bold min-h-[200px]
+                        md:px-4 md:py-8 md:text-2xl
+                        lg:py-8 lg:text-3xl
                         2xl:py-12
                     "
                 >{progress.progress < progress.limit && question.text || '...'}</p>
 
-                <div className="flex flex-col items-center gap-4 w-full h-full">
+                <div className="flex flex-col items-center gap-4 w-full h-full ">
                     {options.map((option, index) => (
                         <ButtonOption
                             key={index}
