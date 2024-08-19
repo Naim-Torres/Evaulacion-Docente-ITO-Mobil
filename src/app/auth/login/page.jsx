@@ -4,7 +4,7 @@ import CustomInput from "@/app/components/CustomInput";
 import { useForm } from 'react-hook-form';
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from "next/navigation"
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { useEffect } from 'react'
 import Image from 'next/image';
 import Link from "next/link";
@@ -47,6 +47,7 @@ function LoginPage() {
     return (
         <>
             <main className="flex justify-center items-center w-full h-screen p-8 bg-primary-100">
+                <Toaster richColors position="top-center" visibleToasts={1}/>
                 <div
                     className="overflow-hidden flex flex-col sm:flex-row w-full max-w-[800px] h-fit rounded-lg shadow-md duration-300 hover:shadow-xl"
                 >
