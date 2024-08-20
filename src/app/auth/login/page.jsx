@@ -88,7 +88,7 @@ function LoginPage() {
                                                     message: 'Introduzca su correo electrónico'
                                                 },
                                                 pattern: {
-                                                    value: /^[a-z0-9]+@itoaxaca\.edu\.mx$/,
+                                                    value: /^[a-z0-9.]+@itoaxaca\.edu\.mx$/,
                                                     message: 'El correo no es válido'
                                                 }
                                             })
